@@ -34,16 +34,21 @@ public class Contact {
       this.phoneNumber = phoneNumber;
    }
 
+   public String getPhoto(){return photo;}
+   public void setPhoto(String url){this.photo = url;}
+
    private String firstname; // book title
    private String lastname; // source of book cover's thumbnail image
+   private String photo;
    private String email; // source of book cover's full-size image
    private String phoneNumber; // source of book cover's full-size image
 
-   public Contact(String firstname, String lastname, String email, String phoneNumber) {
+   public Contact(String firstname, String lastname, String email, String phoneNumber, String photo) {
       this.firstname = firstname;
       this.lastname = lastname;
       this.email = email;
       this.phoneNumber = phoneNumber;
+      this.photo = photo;
    }
 
    @Override

@@ -11,7 +11,10 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.stage.FileChooser;
 import javafx.util.Callback;
+
+import java.io.File;
 
 public class CoverViewerController {
    // instance variables for interacting with GUI
@@ -31,21 +34,11 @@ public class CoverViewerController {
 
     @FXML
     private TextField PhoneNumberLabel;
+    @FXML
+    private ImageView ImageViewCover;
+    private String PhotoUrl = "";
 
    public void initialize() {
-      // populate the ObservableList<Book>
-      contacts.add(new Contact("Sultan",
-         "Toktomambetov", "sultan.toktommabetov@gmail.com","996"));
-//      books.add(new Book("C++ How to Program",
-//         "/images/small/cpphtp.jpg", "/images/large/cpphtp.jpg"));
-//      books.add(new Book("Internet and World Wide Web How to Program",
-//         "/images/small/iw3htp.jpg", "/images/large/iw3htp.jpg"));
-//      books.add(new Book("Java How to Program",
-//         "/images/small/jhtp.jpg", "/images/large/jhtp.jpg"));
-//      books.add(new Book("Visual Basic How to Program",
-//         "/images/small/vbhtp.jpg", "/images/large/vbhtp.jpg"));
-//      books.add(new Book("Visual C# How to Program",
-//         "/images/small/vcshtp.jpg", "/images/large/vcshtp.jpg"));
       booksListView.setItems(contacts); // bind booksListView to books
 
       // when ListView selection changes, show large cover in ImageView
@@ -59,6 +52,8 @@ public class CoverViewerController {
                    LastnameLabel.setText(newValue.getLastname());
                    EmailLabel.setText(newValue.getEmail());
                    PhoneNumberLabel.setText(newValue.getPhoneNumber());
+                   String photo = newValue.getPhoto();
+                   updateImageView(photo);
                }
             }
          );        
@@ -76,7 +71,7 @@ public class CoverViewerController {
    @FXML
    void CreateAction(ActionEvent event) {
         booksListView.getItems().add(
-                new Contact(FirstnameLabel.getText(),LastnameLabel.getText(),EmailLabel.getText(),PhoneNumberLabel.getText())
+                new Contact(FirstnameLabel.getText(),LastnameLabel.getText(),EmailLabel.getText(),PhoneNumberLabel.getText(),PhotoUrl==""?"":PhotoUrl)
         );
    }
 
@@ -85,7 +80,9 @@ public class CoverViewerController {
        Contact selectedItem = booksListView.getSelectionModel().getSelectedItem();
        selectedItem.setFirstname( FirstnameLabel.getText() );
        selectedItem.setLastname( LastnameLabel.getText() );
-//       noteService.updateNode( selectedItem );
+       selectedItem.setEmail( EmailLabel.getText());
+       selectedItem.setPhoneNumber(PhoneNumberLabel.getText());
+        selectedItem.setPhoto(PhotoUrl);
 
        // First update the item in the model
        booksListView.getItems().set( booksListView.getSelectionModel().getSelectedIndex(), selectedItem );
@@ -98,6 +95,32 @@ public class CoverViewerController {
        int index = booksListView.getSelectionModel().getSelectedIndex();
        booksListView.getSelectionModel().clearSelection();
        booksListView.getItems().remove( index );
+       booksListView.refresh();
+   }
+
+    @FXML
+    void UploadAction(ActionEvent event){
+        FileChooser fc = new FileChooser();
+        File f = fc.showOpenDialog(null);
+        if(f!=null){
+            this.PhotoUrl = f.getAbsolutePath();
+            updateImageView(this.PhotoUrl);
+        }else{
+            this.PhotoUrl = "";
+        }
+    }
+    @FXML
+    void RemoveUploadAction(ActionEvent event){
+            this.PhotoUrl = "";
+            updateImageView("");
+    }
+   void updateImageView(String url){
+      if(url!=""){
+          ImageViewCover.setImage(new Image(url));
+      }else{
+          ImageViewCover.setImage(null);
+      }
+
    }
 }
 
